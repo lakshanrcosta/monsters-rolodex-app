@@ -1,26 +1,28 @@
-import { Component } from 'react';
-import PropTypes from 'prop-types';
 import Card from '../card/card.component';
 import './card-list.styles.css';
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
-class CardList extends Component {
-  render() {
-    const { monsters, searchText } = this.props;
+const CardList = ({ monsters, searchText }) => {
+  const [filteredMonsters, setFilteredMonsters] = useState(monsters);
 
-    const filteredMonsters = monsters.filter((monster) => {
+  useEffect(() => {
+    const updateFilteredMonsters = monsters.filter((monster) => {
       return monster.name.toLowerCase().includes(searchText);
     });
 
-    return (
-      <div className={'card-list'}>
-        {filteredMonsters.map((monster) => {
-          const { id, name, email } = monster;
-          return <Card key={id} id={id} name={name} email={email} />;
-        })}
-      </div>
-    );
-  }
-}
+    setFilteredMonsters(updateFilteredMonsters);
+  }, [monsters, searchText]);
+
+  return (
+    <div className={'card-list'}>
+      {filteredMonsters.map((monster) => {
+        const { id, name, email } = monster;
+        return <Card key={id} id={id} name={name} email={email} />;
+      })}
+    </div>
+  );
+};
 
 CardList.propTypes = {
   monsters: PropTypes.array.isRequired,
